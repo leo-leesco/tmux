@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Reload tmux configuration after each commit so the running server
+# always reflects the committed state. No-op when no server is running.
+
+repo_root="$(git rev-parse --show-toplevel)"
+conf="$repo_root/tmux.conf"
+
+[ -f "$conf" ] || exit 0
+command -v tmux >/dev/null 2>&1 || exit 0
+tmux info >/dev/null 2>&1 || exit 0
+
+if tmux source-file "$conf" 2>/tmp/tmux-reload.err; then
+  tmux display-message "tmux: reloaded $(basename "$conf")"
+else
+  echo "tmux reload failed:" >&2
+  cat /tmp/tmux-reload.err >&2
+fi
