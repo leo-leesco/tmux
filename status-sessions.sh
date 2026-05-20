@@ -1,5 +1,5 @@
 #!/bin/sh
-tmux list-sessions -F '#{session_name}|#{?session_attached,1,0}' | sort | awk -F'|' '{
+tmux list-sessions -F '#{session_name} #{?session_attached,1,0}' | sort -k1,1 | awk '{
     n = NR
     if ($2 == "1") {
         cmd = "tmux list-windows -t " $1 " -F \"#{window_index}:#{window_name}#{window_flags}\""
